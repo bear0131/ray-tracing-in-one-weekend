@@ -1,0 +1,15 @@
+# Compiled 
+build
+
+# Product
+*.ppm
+
+# IDE
+.vscode
+
+# MacOS
+.DS_Store
+.AppleDouble
+.LSOverride
+__MACOSX
+._*
