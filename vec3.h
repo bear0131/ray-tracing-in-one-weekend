@@ -2,10 +2,10 @@
 
 #define VEC3_H
 
-#include<cmath>
-#include<iostream>
+#include <cmath>
+#include <iostream>
 
-class vec3{
+class vec3 {
   private:
     float e[3];
 
@@ -15,71 +15,47 @@ class vec3{
     float x() const { return e[0]; }
     float y() const { return e[1]; }
     float z() const { return e[2]; }
-    float operator [] (int id) const { return e[id]; }
-    float& operator [] (int id) { return e[id]; }
+    float operator[](int id) const { return e[id]; }
+    float &operator[](int id) { return e[id]; }
 
-    vec3 operator - () const { return vec3(-e[0], -e[1], -e[2]); }
+    vec3 operator-() const { return vec3(-e[0], -e[1], -e[2]); }
 
-    vec3& operator += (const vec3 &rh) {
+    vec3 &operator+=(const vec3 &rh) {
         e[0] += rh.e[0], e[1] += rh.e[1], e[2] += rh.e[2];
         return *this;
     }
-    vec3& operator -= (const vec3 &rh) {
+    vec3 &operator-=(const vec3 &rh) {
         e[0] -= rh.e[0], e[1] -= rh.e[1], e[2] -= rh.e[2];
         return *this;
     }
-    vec3& operator *= (float rh) {
+    vec3 &operator*=(float rh) {
         e[0] *= rh, e[1] *= rh, e[2] *= rh;
         return *this;
     }
-    vec3& operator /= (float rh) {
-        return (*this) *= (1. / rh);
-    }
+    vec3 &operator/=(float rh) { return (*this) *= (1. / rh); }
 
-    float length_squared() const {
-        return e[0]*e[0] + e[1]*e[1] + e[2]*e[2];
-    }
-    float length() const {
-        return std::sqrt(length_squared());
-    }
+    float length_squared() const { return e[0] * e[0] + e[1] * e[1] + e[2] * e[2]; }
+    float length() const { return std::sqrt(length_squared()); }
 };
 
 using point3 = vec3;
 
 // Vector Utility Functions
 
-inline std::ostream& operator << (std::ostream &o, vec3 v) {
+inline std::ostream &operator<<(std::ostream &o, vec3 v) {
     return o << "(" << v[0] << ", " << v[1] << ", " << v[2] << ")";
 }
 
-inline vec3 operator + (const vec3 &lh, const vec3 &rh) {
-    return vec3(lh[0] + rh[0], lh[1] + rh[1], lh[2] + rh[2]);
-}
-inline vec3 operator - (const vec3 &lh, const vec3 &rh) {
-    return vec3(lh[0] - rh[0], lh[1] - rh[1], lh[2] - rh[2]);
-}
-inline vec3 operator * (float lh, const vec3 &rh) {
-    return vec3(rh[0] * lh, rh[1] * lh, rh[2] * lh);
-}
-inline vec3 operator * (const vec3 &lh, float rh) {
-    return rh * lh;
-}
-inline vec3 operator / (const vec3 &lh, float rh){
-    return lh * (1. / rh);
-}
+inline vec3 operator+(const vec3 &lh, const vec3 &rh) { return vec3(lh[0] + rh[0], lh[1] + rh[1], lh[2] + rh[2]); }
+inline vec3 operator-(const vec3 &lh, const vec3 &rh) { return vec3(lh[0] - rh[0], lh[1] - rh[1], lh[2] - rh[2]); }
+inline vec3 operator*(float lh, const vec3 &rh) { return vec3(rh[0] * lh, rh[1] * lh, rh[2] * lh); }
+inline vec3 operator*(const vec3 &lh, float rh) { return rh * lh; }
+inline vec3 operator/(const vec3 &lh, float rh) { return lh * (1. / rh); }
 
-inline float dot(const vec3 &lh, const vec3 &rh){
-    return lh[0] * rh[0] + lh[1] * rh[1] + lh[2] * rh[2];
+inline float dot(const vec3 &lh, const vec3 &rh) { return lh[0] * rh[0] + lh[1] * rh[1] + lh[2] * rh[2]; }
+inline vec3 cross(const vec3 &lh, const vec3 &rh) {
+    return vec3(lh[1] * rh[2] - lh[2] * rh[1], lh[2] * rh[0] - lh[0] * rh[2], lh[0] * rh[1] - lh[1] * rh[0]);
 }
-inline vec3 cross(const vec3 &lh, const vec3 &rh){
-    return vec3(
-        lh[1] * rh[2] - lh[2] * rh[1],
-        lh[2] * rh[0] - lh[0] * rh[2],
-        lh[0] * rh[1] - lh[1] * rh[0]
-    );
-}
-inline vec3 unit_vector(const vec3 &v){
-    return v / v.length();
-}
+inline vec3 unit_vector(const vec3 &v) { return v / v.length(); }
 
 #endif

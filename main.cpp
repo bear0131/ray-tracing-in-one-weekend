@@ -1,24 +1,15 @@
-#include <iostream>
-
-#include "color.h"
 #include "hittable.h"
-#include "ray.h"
+#include "hittable_list.h"
+#include "rtweekend.h"
 #include "sphere.h"
-#include "utils.h"
-#include "vec3.h"
 
 bool is_debugging = false;
 
-color ray_color(const ray &r) {
+color ray_color(const ray &r, const hittable &world) {
     color pixel_color = color(1, 1, 1);
-    {
-        point3 sphere_center = point3(0, 0, -10);
-        float sphere_radius = 3;
-        sphere redball = sphere(sphere_center, sphere_radius);
-        hit_record rec;
-        if (redball.hit(r, 0, 100., rec)) {
-            pixel_color = vec_to_color(rec.norm);
-        }
+    hit_record rec;
+    if (world.hit(r, interval(0, infinity), rec)) {
+        pixel_color = vec_to_color(rec.norm);
     }
     return pixel_color;
 }
@@ -31,6 +22,12 @@ int main() {
     int image_width = 192;
     int image_height = int(image_width / aspect_ratio);
     image_height = (image_height < 1) ? 1 : image_height;
+
+    // World
+
+    hittable_list world;
+    world.add(make_shared<sphere>(point3(1, 0, -10), 3));
+    world.add(make_shared<sphere>(point3(-2, 0, -3), 2));
 
     // Camera
 
@@ -60,7 +57,8 @@ int main() {
             // }
 
             point3 pixel_loc = pixel00_loc + i * pixel_delta_x + j * pixel_delta_y;
-            color pixel_color = ray_color(ray(camera_center, pixel_loc - camera_center));
+            ray pixel_ray = ray(camera_center, pixel_loc - camera_center);
+            color pixel_color = ray_color(pixel_ray, world);
             write_color(std::cout, pixel_color);
         }
     }
