@@ -6,6 +6,8 @@
 #include <limits>
 #include <memory>
 
+bool is_debugging = false;
+
 using std::make_shared;
 using std::shared_ptr;
 

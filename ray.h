@@ -1,6 +1,8 @@
 #ifndef RAY_H
 #define RAY_H
 
+#include <iostream>
+
 #include "vec3.h"
 
 class ray {
@@ -16,5 +18,7 @@ class ray {
 
     point3 at(float t) const { return orig + t * dir; }
 };
+
+std::ostream& operator<<(std::ostream& o, const ray& r) { return o << r.origin() << " + " << r.direction() << "t"; }
 
 #endif
