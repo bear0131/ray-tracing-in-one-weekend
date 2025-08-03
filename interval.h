@@ -10,6 +10,11 @@ class interval {
 
     bool contains(float x) const { return min <= x && x <= max; }
     bool surrounds(float x) const { return min < x && x < max; }
+    float clamp(float x) const {
+        if (x < min) x = min;
+        if (x > max) x = max;
+        return x;
+    }
 
     static const interval empty, universe;
 };
