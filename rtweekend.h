@@ -14,6 +14,7 @@ using std::shared_ptr;
 
 const float infinity = std::numeric_limits<float>::infinity();
 const float pi = 3.1415926535897932385;
+const float eps = 1e-16;
 
 inline float degrees_to_radians(float degrees) { return degrees * pi / 180.; }
 

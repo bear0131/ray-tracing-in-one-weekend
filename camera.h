@@ -1,6 +1,8 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include <sysinfoapi.h>
+
 #include "hittable.h"
 #include "rtweekend.h"
 
@@ -10,11 +12,14 @@ class camera {
     vec3 direction = vec3(0, 0, -1.);
     float aspect_ratio = 16. / 9.;
     int image_width = 192;
-    float viewport_width = 2.;
-    float focal_length = 1.;
-    int samples_per_pixel = 10;
+    float viewport_width = 2.0;
+    float focal_length = 1.0;
+    int samples_per_pixel = 20;
+    int max_depth = 10;
     void render(const hittable& world) {
         initialize();
+
+        float start_time = GetTickCount();
 
         std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
 
@@ -29,14 +34,16 @@ class camera {
                 color pixel_color = color();
                 for (int k = 0; k < samples_per_pixel; ++k) {
                     ray pixel_ray = get_ray(i, j);
-                    color sample_color = ray_color(pixel_ray, world);
+                    color sample_color = ray_color(pixel_ray, max_depth, world);
                     pixel_color += pixel_color_ratio * sample_color;
                 }
                 write_color(std::cout, pixel_color);
             }
         }
 
-        std::clog << "\rDone!                        " << std::endl;
+        float end_time = GetTickCount();
+
+        std::clog << "\rDone in " << 0.001 * (end_time - start_time) << "s              " << std::endl;
     }
 
   private:
@@ -64,17 +71,22 @@ class camera {
         pixel00_loc = viewport_upperleft + 0.5 * pixel_delta_u + 0.5 * pixel_delta_v;
     }
 
-    color ray_color(const ray& r, const hittable& world) {
+    color ray_color(const ray& r, int depth, const hittable& world) {
         if (is_debugging) {
             std::cerr << r << std::endl;
         }
 
-        color pixel_color = color(1, 1, 1);
-        hit_record rec;
-        if (world.hit(r, interval(0, infinity), rec)) {
-            pixel_color = vec_to_color(rec.norm);
+        if (depth <= 0) {
+            return color(0, 0, 0);
         }
-        return pixel_color;
+        hit_record rec;
+        if (world.hit(r, interval(0.001, infinity), rec)) {
+            return 0.5 * ray_color(ray(rec.p, random_unit_vector() + rec.norm), depth - 1, world);
+        }
+
+        vec3 unit_direction = unit_vector(r.direction());
+        float a = 0.5 * (unit_direction.y() + 1.0);
+        return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
     }
 
     ray get_ray(int pixel_x, int pixel_y) {
