@@ -41,6 +41,11 @@ class vec3 {
     static vec3 random(float min, float max) {
         return vec3(random_float(min, max), random_float(min, max), random_float(min, max));
     }
+
+    bool near_zero() {
+        const float s = 1e-5;
+        return fabs(e[0]) < s && fabs(e[1]) < s && fabs(e[2]) < s;
+    }
 };
 
 using point3 = vec3;
@@ -51,6 +56,7 @@ inline std::ostream &operator<<(std::ostream &o, vec3 v) { return o << "(" << v[
 
 inline vec3 operator+(const vec3 &lh, const vec3 &rh) { return vec3(lh[0] + rh[0], lh[1] + rh[1], lh[2] + rh[2]); }
 inline vec3 operator-(const vec3 &lh, const vec3 &rh) { return vec3(lh[0] - rh[0], lh[1] - rh[1], lh[2] - rh[2]); }
+inline vec3 operator*(const vec3 &lh, const vec3 &rh) { return vec3(rh[0] * lh[0], rh[1] * lh[1], rh[2] * lh[2]); }
 inline vec3 operator*(float lh, const vec3 &rh) { return vec3(rh[0] * lh, rh[1] * lh, rh[2] * lh); }
 inline vec3 operator*(const vec3 &lh, float rh) { return rh * lh; }
 inline vec3 operator/(const vec3 &lh, float rh) { return lh * (1. / rh); }
@@ -80,5 +86,7 @@ inline vec3 random_on_hemisphere(const vec3 &norm) {
         return -v;
     }
 }
+
+inline vec3 reflect(const vec3 &v, const vec3 &n) { return v - 2. * dot(v, n) * n; }
 
 #endif

@@ -16,6 +16,9 @@ class hittable_list : public hittable {
     hittable_list(shared_ptr<hittable> p) { add(p); }
     void add(shared_ptr<hittable> p) { objs.push_back(p); }
     bool hit(const ray& r, const interval& ray_t, hit_record& rec) const override {
+        if (is_debugging) {
+            std::cerr << "world hitting " << r << std::endl;
+        }
         hit_record temp_rec;
         float closest_hit = ray_t.max;
         bool hit_anything = false;

@@ -4,6 +4,7 @@
 #include <sysinfoapi.h>
 
 #include "hittable.h"
+#include "material.h"
 #include "rtweekend.h"
 
 class camera {
@@ -14,7 +15,7 @@ class camera {
     int image_width = 192;
     float viewport_width = 2.0;
     float focal_length = 1.0;
-    int samples_per_pixel = 20;
+    int samples_per_pixel = 10;
     int max_depth = 10;
     void render(const hittable& world) {
         initialize();
@@ -26,7 +27,7 @@ class camera {
         for (int j = 0; j < image_height; ++j) {
             std::clog << "\rScanning line [" << j << " / " << image_height << "]" << std::flush;
             for (int i = 0; i < image_width; ++i) {
-                // if (j == image_height / 2 && i == image_width / 2) {
+                // if (j == 13 && i == 0) {
                 //     is_debugging = true;
                 // } else {
                 //     is_debugging = false;
@@ -81,7 +82,16 @@ class camera {
         }
         hit_record rec;
         if (world.hit(r, interval(0.001, infinity), rec)) {
-            return 0.5 * ray_color(ray(rec.p, random_unit_vector() + rec.norm), depth - 1, world);
+            if (is_debugging) {
+                std::cerr << "hit! " << r << " " << rec.mat << std::endl;
+            }
+            color attenuation;
+            ray r_out;
+            if (rec.mat->scatter(r, rec, attenuation, r_out)) {
+                return attenuation * ray_color(r_out, depth - 1, world);
+            } else {
+                return color(0, 0, 0);
+            }
         }
 
         vec3 unit_direction = unit_vector(r.direction());
