@@ -27,7 +27,7 @@ class camera {
         for (int j = 0; j < image_height; ++j) {
             std::clog << "\rScanning line [" << j << " / " << image_height << "]" << std::flush;
             for (int i = 0; i < image_width; ++i) {
-                // if (j == 13 && i == 0) {
+                // if (j == image_height / 2 && i == 0) {
                 //     is_debugging = true;
                 // } else {
                 //     is_debugging = false;

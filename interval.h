@@ -4,8 +4,8 @@
 class interval {
   public:
     float min, max;
-    interval() : min(+infinity), max(-infinity) {}
-    interval(float l, float r) : min(l), max(r) {}
+    interval() { min = +infinity, max = -infinity; }
+    interval(float l, float r) { min = l, max = r; }
     float size() const { return max - min; }
 
     bool contains(float x) const { return min <= x && x <= max; }
